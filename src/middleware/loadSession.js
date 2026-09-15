@@ -143,6 +143,9 @@ async function loadSession(req, res, next) {
     return next();
   } catch (error) {
     console.error('Session loading error:', error.message);
+    // On DB errors, treat as unauthenticated but log for debugging.
+    // Do NOT return 500 here — session loading runs on every request and
+    // transient DB issues should not take down the whole API.
     return next();
   }
 }

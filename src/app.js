@@ -62,10 +62,16 @@ app.use(helmet({
 }));
 
 // CORS configuration
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3001')
+// CORS_ORIGIN: comma-separated list of exact origins (e.g. "https://myapp.vercel.app,http://localhost:3001")
+// FRONTEND_URL: single frontend origin (convenience alias, merged with CORS_ORIGIN)
+// CORS_ORIGIN_PATTERNS: comma-separated wildcard patterns (e.g. "*.vercel.app")
+const envOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3001')
   .split(',')
   .map(o => o.trim())
-  .filter(Boolean)
+  .filter(Boolean);
+const frontendUrl = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL.trim()] : [];
+const allowedOrigins = envOrigins
+  .concat(frontendUrl)
   .concat(['http://10.139.255.165:3001', 'http://127.0.0.1:3001']);
 
 const corsOptions = {
